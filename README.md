@@ -44,6 +44,16 @@ copilot --allow-all
 
 ---
 
+## Choose Your Setup
+
+| Scenario | Guide |
+|----------|-------|
+| Android phone, native Termux only (no Ubuntu proot) | [NATIVE-TERMUX-SETUP.md](./NATIVE-TERMUX-SETUP.md) |
+| Android phone, Termux + Ubuntu proot (this environment) | [TERMUX-SETUP.md](./TERMUX-SETUP.md) + [UBUNTU-TOOLS-INSTALL.md](./UBUNTU-TOOLS-INSTALL.md) |
+| Standard Ubuntu / VPS / WSL / cloud (no Termux) | [UBUNTU-ONLY-SETUP.md](./UBUNTU-ONLY-SETUP.md) |
+
+---
+
 ## Repository Contents
 
 | File / Directory | Purpose |
@@ -51,7 +61,9 @@ copilot --allow-all
 | `.copilot/copilot-instructions.md` | Global Copilot CLI rules (333 lines) |
 | `.copilot/mcp-config.json` | All 8 MCP server definitions |
 | `.copilot/permissions-config.json` | Copilot permissions config |
-| `TERMUX-SETUP.md` | **Termux/Android-specific setup guide** |
+| `NATIVE-TERMUX-SETUP.md` | **Native Termux only** (no Ubuntu proot) |
+| `TERMUX-SETUP.md` | Termux + Ubuntu proot: wake locks, Termux:API, boot scripts |
+| `UBUNTU-ONLY-SETUP.md` | **Standard Ubuntu / VPS / WSL** (no Termux) |
 | `UBUNTU-TOOLS-INSTALL.md` | All tools: Node, Python, Rust, Android SDK, etc. |
 | `SKILLS.md` | Full plugin/skills catalog with install commands |
 | `scripts/fresh-install.sh` | One-shot Termux native setup script |
@@ -120,7 +132,9 @@ See [TERMUX-SETUP.md](./TERMUX-SETUP.md) for full details on:
 
 ## Links
 
-- [TERMUX-SETUP.md](./TERMUX-SETUP.md) — Termux/Android-specific setup
-- [UBUNTU-TOOLS-INSTALL.md](./UBUNTU-TOOLS-INSTALL.md) — Full Ubuntu tool install guide
+- [NATIVE-TERMUX-SETUP.md](./NATIVE-TERMUX-SETUP.md) — Native Termux (no proot)
+- [TERMUX-SETUP.md](./TERMUX-SETUP.md) — Termux + Ubuntu proot (Android)
+- [UBUNTU-ONLY-SETUP.md](./UBUNTU-ONLY-SETUP.md) — Standard Ubuntu / VPS / WSL
+- [UBUNTU-TOOLS-INSTALL.md](./UBUNTU-TOOLS-INSTALL.md) — Full tool install guide
 - [SKILLS.md](./SKILLS.md) — Plugin/skills catalog
 - [GitHub Copilot CLI docs](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line)
