@@ -1,60 +1,66 @@
 # GitHub Copilot CLI Config — Termux Ubuntu (Android)
 
-Full configuration backup for GitHub Copilot CLI running inside **Ubuntu proot on Termux (Android/ARM64)**.
+Full configuration backup and setup guide for GitHub Copilot CLI running inside **Ubuntu proot on Termux (Android/ARM64)**.
 
-## Contents
+## Docs
+
+| File | Description |
+|------|-------------|
+| [SKILLS.md](SKILLS.md) | All Copilot CLI plugins/skills — install commands + full catalog |
+| [UBUNTU-TOOLS-INSTALL.md](UBUNTU-TOOLS-INSTALL.md) | Step-by-step tool installation guide for fresh Ubuntu setup |
+
+## Config Files
 
 | Path | Description |
 |------|-------------|
-| `.copilot/copilot-instructions.md` | Global Copilot CLI instructions — tools, paths, env, Android/Termux rules |
-| `.copilot/mcp-config.json` | MCP server configuration (fetch, playwright, filesystem, github, git, markdown, csv, sqlite) |
-| `.copilot/permissions-config.json` | Tool approval permissions for the `/root` workspace |
-| `package.json` | Node.js dependencies (playwright) |
-| `scripts/hacktools.sh` | Mobile HackLab interactive tool launcher |
-| `scripts/start-hacklab.sh` | Start HackLab desktop (X11 + XFCE + audio) |
-| `scripts/stop-hacklab.sh` | Stop HackLab desktop |
+| `.copilot/copilot-instructions.md` | Global Copilot instructions (tools, paths, Android/Termux rules) |
+| `.copilot/mcp-config.json` | MCP server config (fetch, playwright, filesystem, github, git, markdown, csv, sqlite) |
+| `.copilot/permissions-config.json` | Tool approval permissions for `/root` workspace |
+| `package.json` | Node.js deps (playwright) |
+| `scripts/hacktools.sh` | Mobile HackLab tool launcher |
+| `scripts/start-hacklab.sh` | Start X11/XFCE desktop + audio |
+| `scripts/stop-hacklab.sh` | Stop desktop |
+
+## Quick Restore
+
+```bash
+git clone https://github.com/Masterofowls/copilot-config.git
+cd copilot-config
+mkdir -p ~/.copilot
+cp .copilot/copilot-instructions.md ~/.copilot/
+cp .copilot/mcp-config.json ~/.copilot/
+cp .copilot/permissions-config.json ~/.copilot/
+npm install
+chmod +x scripts/*.sh && cp scripts/*.sh ~/
+gh auth login && copilot auth login
+```
+
+See [UBUNTU-TOOLS-INSTALL.md](UBUNTU-TOOLS-INSTALL.md) for a fresh Ubuntu setup and [SKILLS.md](SKILLS.md) to install all skills.
 
 ## Environment
 
-- **Device:** Android phone (ARM64)
-- **Shell:** Ubuntu proot via Termux (`proot-distro`)
-- **Node:** nvm → v24.15.0
-- **Python:** uv-managed CPython 3.13.13
-- **Rust:** 1.95.0 via rustup
-- **Java:** OpenJDK 17 ARM64
-- **Android SDK:** `/usr/lib/android-sdk` (API 34/35, NDK 29)
+| Component | Version / Path |
+|-----------|---------------|
+| OS | Ubuntu proot in Termux (Android ARM64) |
+| Node.js | nvm → v24.15.0 (`/root/.nvm`) |
+| Python | uv → CPython 3.13.13 (`/root/.local/bin`) |
+| Rust | rustup → 1.95.0 (`/root/.cargo/bin`) |
+| Java | OpenJDK 17 ARM64 (`/usr/lib/jvm/java-17-openjdk-arm64`) |
+| Android SDK | API 34/35, NDK 29 (`/usr/lib/android-sdk`) |
+| Copilot CLI | 1.0.41 (`/usr/local/bin/copilot`) |
+| gh | GitHub CLI (`/usr/bin/gh`) |
 
 ## MCP Servers
 
-| Server | Transport |
-|--------|-----------|
+| Server | Runtime |
+|--------|---------|
 | `fetch` | `uvx mcp-server-fetch` |
 | `playwright` | `npx @playwright/mcp` |
-| `filesystem` | `npx @modelcontextprotocol/server-filesystem` |
-| `github` | `mcp-github-with-gh-token` (wraps `gh auth token`) |
+| `filesystem` | `npx @modelcontextprotocol/server-filesystem /root` |
+| `github` | `/usr/local/bin/mcp-github-with-gh-token` |
 | `git` | `uvx mcp-server-git` |
 | `markdown` | `npx @xjtlumedia/markdown-mcp-server` |
 | `csv` | `npx excel-csv-mcp-server` |
-| `sqlite` | `uvx mcp-server-sqlite` |
+| `sqlite` | `uvx mcp-server-sqlite --db-path ~/.copilot/mcp.sqlite` |
 
-## Key Tool Paths
-
-```
-/root/.local/bin/uv          uv 0.11.8 (Python manager)
-/root/.nvm/...               nvm Node.js v24.15.0
-/root/.cargo/bin/cargo       Rust 1.95.0
-/usr/local/bin/copilot       GitHub Copilot CLI 1.0.41
-/usr/bin/gh                  GitHub CLI
-/usr/lib/android-sdk         Android SDK root
-/usr/lib/jvm/java-17-openjdk-arm64  Java 17
-```
-
-## Restore Instructions
-
-1. Copy `.copilot/` to `~/.copilot/`
-2. Copy `.copilot/mcp-config.json` to `~/.copilot/mcp-config.json`
-3. Install dependencies: `npm install` (for Playwright)
-4. Authenticate: `gh auth login`
-5. Scripts: `chmod +x scripts/*.sh && cp scripts/*.sh ~/`
-
-> **Note:** `settings.json` and `config.json` (contain auth tokens) are intentionally excluded. Re-authenticate with `copilot auth login` after restore.
+> **Note:** `settings.json` / `config.json` (contain auth tokens) are excluded. Re-auth with `copilot auth login` after restore.
