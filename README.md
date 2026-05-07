@@ -1,66 +1,126 @@
-# GitHub Copilot CLI Config — Termux Ubuntu (Android)
+# termux-ubuntu-copilot-setup
 
-Full configuration backup and setup guide for GitHub Copilot CLI running inside **Ubuntu proot on Termux (Android/ARM64)**.
+> **GitHub Copilot CLI — complete configuration for Ubuntu proot on Termux (Android ARM64)**
 
-## Docs
+Full setup for running GitHub Copilot CLI on an Android phone via Termux + proot Ubuntu, including:
+- Global Copilot instructions (no background agents, Android-aware defaults)
+- All 8 MCP server configurations (fetch, playwright, filesystem, github, git, markdown, csv, sqlite)
+- Termux-specific setup (wake locks, Termux:API, permissions, boot scripts, properties)
+- Complete tool install guide (Node, Python/uv, Rust, Android SDK, Tauri, gh CLI)
+- Plugin/skills catalog with install commands
 
-| File | Description |
-|------|-------------|
-| [SKILLS.md](SKILLS.md) | All Copilot CLI plugins/skills — install commands + full catalog |
-| [UBUNTU-TOOLS-INSTALL.md](UBUNTU-TOOLS-INSTALL.md) | Step-by-step tool installation guide for fresh Ubuntu setup |
+---
 
-## Config Files
-
-| Path | Description |
-|------|-------------|
-| `.copilot/copilot-instructions.md` | Global Copilot instructions (tools, paths, Android/Termux rules) |
-| `.copilot/mcp-config.json` | MCP server config (fetch, playwright, filesystem, github, git, markdown, csv, sqlite) |
-| `.copilot/permissions-config.json` | Tool approval permissions for `/root` workspace |
-| `package.json` | Node.js deps (playwright) |
-| `scripts/hacktools.sh` | Mobile HackLab tool launcher |
-| `scripts/start-hacklab.sh` | Start X11/XFCE desktop + audio |
-| `scripts/stop-hacklab.sh` | Stop desktop |
-
-## Quick Restore
+## Quick Restore (Fresh Device)
 
 ```bash
-git clone https://github.com/Masterofowls/copilot-config.git
-cd copilot-config
+# 1. Native Termux — run fresh-install script
+pkg install -y git curl
+git clone https://github.com/Masterofowls/termux-ubuntu-copilot-setup
+cd termux-ubuntu-copilot-setup
+bash scripts/fresh-install.sh
+
+# 2. Grant all Android permissions
+bash scripts/grant-all-permissions.sh
+
+# 3. Enter Ubuntu proot
+proot-distro login ubuntu --user root
+
+# 4. Install all Ubuntu tools
+# Follow UBUNTU-TOOLS-INSTALL.md
+
+# 5. Restore Copilot config
 mkdir -p ~/.copilot
 cp .copilot/copilot-instructions.md ~/.copilot/
 cp .copilot/mcp-config.json ~/.copilot/
 cp .copilot/permissions-config.json ~/.copilot/
-npm install
-chmod +x scripts/*.sh && cp scripts/*.sh ~/
-gh auth login && copilot auth login
+
+# 6. Authenticate GitHub CLI
+gh auth login
+
+# 7. Start Copilot
+copilot --allow-all
 ```
 
-See [UBUNTU-TOOLS-INSTALL.md](UBUNTU-TOOLS-INSTALL.md) for a fresh Ubuntu setup and [SKILLS.md](SKILLS.md) to install all skills.
+---
 
-## Environment
+## Repository Contents
 
-| Component | Version / Path |
-|-----------|---------------|
-| OS | Ubuntu proot in Termux (Android ARM64) |
-| Node.js | nvm → v24.15.0 (`/root/.nvm`) |
-| Python | uv → CPython 3.13.13 (`/root/.local/bin`) |
-| Rust | rustup → 1.95.0 (`/root/.cargo/bin`) |
-| Java | OpenJDK 17 ARM64 (`/usr/lib/jvm/java-17-openjdk-arm64`) |
-| Android SDK | API 34/35, NDK 29 (`/usr/lib/android-sdk`) |
-| Copilot CLI | 1.0.41 (`/usr/local/bin/copilot`) |
-| gh | GitHub CLI (`/usr/bin/gh`) |
+| File / Directory | Purpose |
+|------------------|---------|
+| `.copilot/copilot-instructions.md` | Global Copilot CLI rules (333 lines) |
+| `.copilot/mcp-config.json` | All 8 MCP server definitions |
+| `.copilot/permissions-config.json` | Copilot permissions config |
+| `TERMUX-SETUP.md` | **Termux/Android-specific setup guide** |
+| `UBUNTU-TOOLS-INSTALL.md` | All tools: Node, Python, Rust, Android SDK, etc. |
+| `SKILLS.md` | Full plugin/skills catalog with install commands |
+| `scripts/fresh-install.sh` | One-shot Termux native setup script |
+| `scripts/grant-all-permissions.sh` | Grant all Android permissions to Termux |
+| `scripts/hacktools.sh` | Mobile HackLab tool launcher |
+| `scripts/start-hacklab.sh` | Start X11/XFCE desktop session |
+| `scripts/stop-hacklab.sh` | Stop desktop session |
+| `package.json` | Node.js dependencies (playwright) |
+
+---
 
 ## MCP Servers
 
-| Server | Runtime |
+| Server | Command |
 |--------|---------|
-| `fetch` | `uvx mcp-server-fetch` |
-| `playwright` | `npx @playwright/mcp` |
-| `filesystem` | `npx @modelcontextprotocol/server-filesystem /root` |
+| `fetch` | `uvx --from mcp-server-fetch mcp-server-fetch` |
+| `playwright` | `npx -y @playwright/mcp@latest` |
+| `filesystem` | `npx -y @modelcontextprotocol/server-filesystem@latest /root` |
 | `github` | `/usr/local/bin/mcp-github-with-gh-token` |
-| `git` | `uvx mcp-server-git` |
-| `markdown` | `npx @xjtlumedia/markdown-mcp-server` |
-| `csv` | `npx excel-csv-mcp-server` |
-| `sqlite` | `uvx mcp-server-sqlite --db-path ~/.copilot/mcp.sqlite` |
+| `git` | `uvx --from mcp-server-git mcp-server-git` |
+| `markdown` | `npx -y @xjtlumedia/markdown-mcp-server@latest` |
+| `csv` | `npx -y excel-csv-mcp-server@latest` |
+| `sqlite` | `uvx --from mcp-server-sqlite mcp-server-sqlite --db-path /root/.copilot/mcp.sqlite` |
 
-> **Note:** `settings.json` / `config.json` (contain auth tokens) are excluded. Re-auth with `copilot auth login` after restore.
+Config file: `~/.copilot/mcp-config.json`
+
+---
+
+## Key Environment Paths
+
+| Component | Path |
+|-----------|------|
+| Copilot instructions | `~/.copilot/copilot-instructions.md` |
+| MCP config | `~/.copilot/mcp-config.json` |
+| Node.js (nvm) | `~/.nvm/versions/node/v24.15.0/bin/node` |
+| Python (uv) | `~/.local/bin/python` (CPython 3.13.13) |
+| Rust/Cargo | `~/.cargo/bin/` |
+| Android SDK | `/usr/lib/android-sdk` |
+| Android NDK | `/usr/lib/android-sdk/ndk/29.0.14206865` |
+| Java 17 | `/usr/lib/jvm/java-17-openjdk-arm64` |
+| GitHub CLI | `/usr/bin/gh` |
+| Ubuntu SFTP bridge | `127.0.0.1:8022` (rclone, key in Android storage) |
+
+---
+
+## Android Constraints
+
+> **CRITICAL:** Always run `termux-wake-lock` before long tasks.
+> Android will SIGKILL (signal 9) background processes when screen turns off or memory is low.
+> Copilot is configured to **never use background agents** for this reason.
+
+See [TERMUX-SETUP.md](./TERMUX-SETUP.md) for full details on:
+- Wake locks and battery optimization
+- Termux:API setup and permissions
+- Boot scripts and widget shortcuts
+- tmux for session persistence
+- Android SFTP file access
+
+---
+
+## Excluded Files (Secrets)
+
+`~/.copilot/settings.json` and `~/.copilot/config.json` contain a live OAuth token and are **never committed**. Restore them by running `copilot` once and authenticating.
+
+---
+
+## Links
+
+- [TERMUX-SETUP.md](./TERMUX-SETUP.md) — Termux/Android-specific setup
+- [UBUNTU-TOOLS-INSTALL.md](./UBUNTU-TOOLS-INSTALL.md) — Full Ubuntu tool install guide
+- [SKILLS.md](./SKILLS.md) — Plugin/skills catalog
+- [GitHub Copilot CLI docs](https://docs.github.com/en/copilot/using-github-copilot/using-github-copilot-in-the-command-line)
