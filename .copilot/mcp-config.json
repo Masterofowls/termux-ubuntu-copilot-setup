@@ -1,0 +1,95 @@
+{
+  "mcpServers": {
+    "fetch": {
+      "type": "local",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcp-server-fetch",
+        "mcp-server-fetch"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "playwright": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "filesystem": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "/root"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "github": {
+      "type": "local",
+      "command": "/root/.local/bin/mcp-github-with-gh-token",
+      "args": [],
+      "tools": [
+        "*"
+      ]
+    },
+    "git": {
+      "type": "local",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcp-server-git",
+        "mcp-server-git"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "markdown": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@xjtlumedia/markdown-mcp-server@latest"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "csv": {
+      "type": "local",
+      "command": "npx",
+      "args": [
+        "-y",
+        "excel-csv-mcp-server@latest"
+      ],
+      "tools": [
+        "*"
+      ]
+    },
+    "sqlite": {
+      "type": "local",
+      "command": "uvx",
+      "args": [
+        "--from",
+        "mcp-server-sqlite",
+        "mcp-server-sqlite",
+        "--db-path",
+        "/root/.copilot/mcp.sqlite"
+      ],
+      "tools": [
+        "*"
+      ]
+    }
+  }
+}

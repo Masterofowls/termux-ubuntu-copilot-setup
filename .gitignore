@@ -1,0 +1,13 @@
+node_modules/
+package-lock.json
+
+# Never commit secrets
+.copilot/settings.json
+.copilot/config.json
+*.sqlite
+*.db
+*.db-shm
+*.db-wal
+session-state/
+logs/
+command-history-state.json
